@@ -1,30 +1,27 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { Routes, Route, Navigate } from "react-router";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
-  const [message, setMessage] = useState("Connecting...");
-
-  useEffect(() => {
-    const checkServer = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:5000/api/health"
-        );
-
-        setMessage(response.data.message);
-      } catch (error) {
-        setMessage("Backend connection failed ❌");
-      }
-    };
-
-    checkServer();
-  }, []);
-
   return (
-    <div>
-      <h1>CyberXInfinity</h1>
-      <p>{message}</p>
-    </div>
+    <Routes>
+      <Route path="/" element={<Navigate to="/login" replace />} />
+
+      <Route path="/login" element={<Login />} />
+
+      <Route path="/register" element={<Register />} />
+
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
   );
 }
 
