@@ -5,6 +5,8 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import labRoutes from "./routes/labRoutes.js";
+import quizRoutes from "./routes/quizRoutes.js";
 
 dotenv.config();
 
@@ -21,6 +23,8 @@ app.use(express.json());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/labs", labRoutes);
+app.use("/api/quizzes", quizRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {

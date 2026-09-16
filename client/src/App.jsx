@@ -3,6 +3,9 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Labs from "./pages/Labs";
+import LabDetail from "./pages/LabDetail";
+import Quiz from "./pages/Quiz";
 
 function App() {
   return (
@@ -18,6 +21,32 @@ function App() {
         element={
           <ProtectedRoute>
             <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+    
+    <Route
+        path="/labs"
+        element={
+          <ProtectedRoute>
+            <Labs />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/labs/:slug"
+        element={
+          <ProtectedRoute>
+            <LabDetail />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/labs/:labId/quiz"
+        element={
+          <ProtectedRoute>
+            <Quiz />
           </ProtectedRoute>
         }
       />

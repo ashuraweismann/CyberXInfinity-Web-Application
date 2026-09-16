@@ -5,9 +5,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/server.js",
-    "start": "node src/server.js"
+  "dev": "nodemon src/server.js",
+  "start": "node src/server.js",
+  "seed:labs": "node src/seedLabs.js",
+  "seed:quizzes": "node src/seedQuizzes.js"
   },
+  
   "keywords": [],
   "author": "",
   "license": "ISC",
