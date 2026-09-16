@@ -1,6 +1,7 @@
 import QuizQuestion from "../models/QuizQuestion.js";
 import QuizAttempt from "../models/QuizAttempt.js";
 import Lab from "../models/Lab.js";
+import { awardLabPoints } from "../services/gamificationService.js";
 
 // Get quiz questions for a lab
 export const getQuizByLab = async (req, res) => {
@@ -132,6 +133,13 @@ export const submitQuiz = async (req, res) => {
       percentage,
     });
 
+    const reward = await awardLabPoints({
+      userId: req.user.userId,
+      labId,
+      score: correctAnswers,
+      totalQuestions,
+    });
+
     const results = questions.map((question) => {
       const submitted = evaluatedAnswers.find(
         (answer) =>
@@ -152,10 +160,16 @@ export const submitQuiz = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "Quiz submitted successfully.",
+
       attemptId: attempt._id,
       score: correctAnswers,
       totalQuestions,
       percentage,
+      pointsAwarded: reward.pointsAwarded,
+      totalPoints: reward.totalPoints,
+      completedLabs: reward.completedLabs,
+      alreadyCompleted: reward.alreadyCompleted,
+      pointBreakdown: reward.breakdown ?? null,
       results,
     });
   } catch (error) {

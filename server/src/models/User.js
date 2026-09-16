@@ -46,6 +46,13 @@ const userSchema = new mongoose.Schema(
       default: 0,
       min: 0,
     },
+
+    completedLabIds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Lab",
+      },
+    ],
   },
   {
     timestamps: true,

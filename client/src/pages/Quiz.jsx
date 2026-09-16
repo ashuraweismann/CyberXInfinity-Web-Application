@@ -65,7 +65,22 @@ function Quiz() {
         labId,
         formattedAnswers
       );
+      const currentUser = JSON.parse(
+        localStorage.getItem("user")
+      );
 
+      if (currentUser) {
+        const updatedUser = {
+          ...currentUser,
+          points: data.totalPoints,
+          completedLabs: data.completedLabs,
+        };
+
+        localStorage.setItem(
+          "user",
+          JSON.stringify(updatedUser)
+        );
+      }
       setResult(data);
     } catch (error) {
       setError(
@@ -100,9 +115,41 @@ function Quiz() {
 
         <p>{result.percentage}%</p>
 
-        <hr />
+        <h2>
+          {result.score} / {result.totalQuestions}
+        </h2>
 
-        <h2>Review</h2>
+        <p>{result.percentage}%</p>
+
+        <div>
+          <h3>Points</h3>
+
+          {result.pointsAwarded > 0 ? (
+            <>
+              <p>
+                🎉 You earned {result.pointsAwarded} points!
+              </p>
+
+              <p>
+                Total points: {result.totalPoints}
+              </p>
+            </>
+          ) : (
+            <>
+              <p>
+                This lab has already been completed.
+              </p>
+
+              <p>
+                No additional points were awarded.
+              </p>
+
+              <p>
+                Total points: {result.totalPoints}
+              </p>
+            </>
+          )}
+        </div>
 
         {result.results.map((item, index) => (
           <div key={item.questionId}>
