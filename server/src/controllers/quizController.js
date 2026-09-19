@@ -2,6 +2,7 @@ import QuizQuestion from "../models/QuizQuestion.js";
 import QuizAttempt from "../models/QuizAttempt.js";
 import Lab from "../models/Lab.js";
 import { awardLabPoints } from "../services/gamificationService.js";
+import generateLearningSuggestion from "../services/aiService.js";
 
 // Get quiz questions for a lab
 export const getQuizByLab = async (req, res) => {
@@ -58,6 +59,18 @@ export const submitQuiz = async (req, res) => {
   try {
     const { labId } = req.params;
     const { answers } = req.body;
+
+    const lab = await Lab.findOne({
+        _id: labId,
+        isPublished: true,
+      });
+
+      if (!lab) {
+        return res.status(404).json({
+          success: false,
+          message: "Lab not found.",
+        });
+      }
 
     if (!Array.isArray(answers) || answers.length === 0) {
       return res.status(400).json({
@@ -124,54 +137,85 @@ export const submitQuiz = async (req, res) => {
       (correctAnswers / totalQuestions) * 100
     );
 
-    const attempt = await QuizAttempt.create({
-      user: req.user.userId,
-      lab: labId,
-      answers: evaluatedAnswers,
-      score: correctAnswers,
-      totalQuestions,
-      percentage,
-    });
+      const attempt = await QuizAttempt.create({
+        user: req.user.userId,
+        lab: labId,
+        answers: evaluatedAnswers,
+        score: correctAnswers,
+        totalQuestions,
+        percentage,
+      });
 
-    const reward = await awardLabPoints({
-      userId: req.user.userId,
-      labId,
-      score: correctAnswers,
-      totalQuestions,
-    });
+      const reward = await awardLabPoints({
+        userId: req.user.userId,
+        labId,
+        score: correctAnswers,
+        totalQuestions,
+      });
 
-    const results = questions.map((question) => {
-      const submitted = evaluatedAnswers.find(
-        (answer) =>
-          answer.question.toString() === question._id.toString()
-      );
+      const results = questions.map((question) => {
+        const submitted = evaluatedAnswers.find(
+          (answer) =>
+            answer.question.toString() ===
+            question._id.toString()
+        );
 
-      return {
-        questionId: question._id,
-        question: question.question,
-        selectedOption: submitted.selectedOption,
-        correctOption: question.correctOption,
-        isCorrect: submitted.isCorrect,
-        explanation: question.explanation,
-        topic: question.topic,
-      };
-    });
+        return {
+          questionId: question._id,
+          question: question.question,
+          selectedOption: submitted.selectedOption,
+          correctOption: question.correctOption,
+          isCorrect: submitted.isCorrect,
+          explanation: question.explanation,
+          topic: question.topic,
+        };
+      });
 
-    return res.status(201).json({
-      success: true,
-      message: "Quiz submitted successfully.",
+      let aiSuggestion = null;
 
-      attemptId: attempt._id,
-      score: correctAnswers,
-      totalQuestions,
-      percentage,
-      pointsAwarded: reward.pointsAwarded,
-      totalPoints: reward.totalPoints,
-      completedLabs: reward.completedLabs,
-      alreadyCompleted: reward.alreadyCompleted,
-      pointBreakdown: reward.breakdown ?? null,
-      results,
-    });
+      try {
+        aiSuggestion =
+          await generateLearningSuggestion({
+            labTitle: lab.title,
+            score: correctAnswers,
+            totalQuestions,
+            percentage,
+            results,
+          });
+      } catch (error) {
+        console.error(
+          "AI suggestion generation failed:",
+          error.message
+        );
+      }
+
+      if (aiSuggestion) {
+        attempt.aiSuggestion = aiSuggestion;
+
+        await attempt.save();
+      }
+
+      return res.status(201).json({
+        success: true,
+        message: "Quiz submitted successfully.",
+
+        attemptId: attempt._id,
+
+        score: correctAnswers,
+        totalQuestions,
+        percentage,
+
+        pointsAwarded: reward.pointsAwarded,
+        totalPoints: reward.totalPoints,
+        completedLabs: reward.completedLabs,
+        alreadyCompleted: reward.alreadyCompleted,
+
+        pointBreakdown: reward.breakdown ?? null,
+
+        aiSuggestion,
+
+        results,
+      });
   } catch (error) {
     console.error("Submit quiz error:", error);
 

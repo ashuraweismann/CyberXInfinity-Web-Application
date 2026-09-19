@@ -151,6 +151,83 @@ function Quiz() {
           )}
         </div>
 
+        {result.aiSuggestion && (
+  <section>
+    <hr />
+
+    <h2>🤖 AI Learning Suggestions</h2>
+
+    <h3>Overall Feedback</h3>
+
+    <p>
+      {result.aiSuggestion.summary}
+    </p>
+
+    {result.aiSuggestion.strengths.length > 0 && (
+      <>
+        <h3>💪 Your Strengths</h3>
+
+        <ul>
+          {result.aiSuggestion.strengths.map(
+            (strength, index) => (
+              <li key={index}>
+                {strength}
+              </li>
+            )
+          )}
+        </ul>
+      </>
+    )}
+
+    {result.aiSuggestion.weakTopics.length > 0 && (
+            <>
+              <h3>📚 Topics to Review</h3>
+
+              <ul>
+                {result.aiSuggestion.weakTopics.map(
+                  (topic, index) => (
+                    <li key={index}>
+                      {topic}
+                    </li>
+                  )
+                )}
+              </ul>
+            </>
+          )}
+
+          <h3>🎯 Recommendations</h3>
+
+          <ul>
+            {result.aiSuggestion.recommendations.map(
+              (recommendation, index) => (
+                <li key={index}>
+                  {recommendation}
+                </li>
+              )
+            )}
+          </ul>
+
+          <h3>➡️ Next Step</h3>
+
+          <p>
+            {result.aiSuggestion.nextStep}
+          </p>
+        </section>
+      )}
+
+      {!result.aiSuggestion && (
+        <section>
+          <hr />
+
+          <h2>🤖 AI Learning Suggestions</h2>
+
+          <p>
+            AI feedback is temporarily unavailable.
+            Your quiz result has still been saved.
+          </p>
+        </section>
+      )}
+
         {result.results.map((item, index) => (
           <div key={item.questionId}>
             <h3>

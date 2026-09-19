@@ -27,7 +27,7 @@ const quizAttemptSchema = new mongoose.Schema(
         selectedOption: {
           type: Number,
           required: true,
-          min: 0,
+          min: -1,
           max: 3,
         },
 
@@ -55,6 +55,36 @@ const quizAttemptSchema = new mongoose.Schema(
       required: true,
       min: 0,
       max: 100,
+    },
+
+    aiSuggestion: {
+      summary: {
+        type: String,
+        default: null,
+      },
+
+      strengths: [
+        {
+          type: String,
+        },
+      ],
+
+      weakTopics: [
+        {
+          type: String,
+        },
+      ],
+
+      recommendations: [
+        {
+          type: String,
+        },
+      ],
+
+      nextStep: {
+        type: String,
+        default: null,
+      },
     },
   },
   {

@@ -41,13 +41,6 @@ export const awardLabPoints = async ({
     totalQuestions,
   });
 
-  /*
-   * Only award points if this lab has not
-   * already been completed by the user.
-   *
-   * $ne prevents repeated attempts from
-   * awarding the same reward.
-   */
   const user = await User.findOneAndUpdate(
     {
       _id: userId,
@@ -66,20 +59,30 @@ export const awardLabPoints = async ({
       },
     },
     {
-      new: true,
+      returnDocument: "after",
     }
   );
 
+  // Lab was already completed
   if (!user) {
+    const existingUser = await User.findById(userId).select(
+      "points completedLabs"
+    );
+
+    if (!existingUser) {
+      throw new Error("User not found.");
+    }
+
     return {
       pointsAwarded: 0,
       alreadyCompleted: true,
-      totalPoints:
-        (await User.findById(userId).select("points"))
-          ?.points ?? 0,
+      totalPoints: existingUser.points,
+      completedLabs: existingUser.completedLabs,
+      breakdown: null,
     };
   }
 
+  // First completion
   return {
     pointsAwarded: calculated.total,
     alreadyCompleted: false,
