@@ -7,6 +7,7 @@ import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import labRoutes from "./routes/labRoutes.js";
 import quizRoutes from "./routes/quizRoutes.js";
+import leaderboardRoutes from "./routes/leaderboardRoutes.js";
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/labs", labRoutes);
 app.use("/api/quizzes", quizRoutes);
+app.use("/api/leaderboard", leaderboardRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {

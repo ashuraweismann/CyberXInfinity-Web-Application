@@ -1,4 +1,7 @@
-import { Link, useNavigate } from "react-router";
+import {
+  Link,
+  useNavigate,
+} from "react-router";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -34,11 +37,17 @@ function Dashboard() {
         </p>
       </section>
 
-      <Link to="/labs">
-        Explore Labs
-      </Link>
+      <div>
+        <Link to="/labs">
+          Explore Labs
+        </Link>
+      </div>
 
-      <br />
+      <div>
+        <Link to="/leaderboard">
+          🏆 Leaderboard
+        </Link>
+      </div>
 
       <button onClick={handleLogout}>
         Logout

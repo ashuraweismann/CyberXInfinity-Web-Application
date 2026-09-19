@@ -6,6 +6,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Labs from "./pages/Labs";
 import LabDetail from "./pages/LabDetail";
 import Quiz from "./pages/Quiz";
+import Leaderboard from "./pages/Leaderboard";
 
 function App() {
   return (
@@ -47,6 +48,14 @@ function App() {
         element={
           <ProtectedRoute>
             <Quiz />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/leaderboard"
+        element={
+          <ProtectedRoute>
+            <Leaderboard />
           </ProtectedRoute>
         }
       />
