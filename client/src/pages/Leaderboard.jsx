@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router";
 
 import { getLeaderboard } from "../services/leaderboardService";
 
@@ -11,7 +10,9 @@ function Leaderboard() {
   useEffect(() => {
     const loadLeaderboard = async () => {
       try {
-        const result = await getLeaderboard();
+        const result =
+          await getLeaderboard();
+
         setData(result);
       } catch (error) {
         setError(
@@ -27,100 +28,135 @@ function Leaderboard() {
   }, []);
 
   if (loading) {
-    return <p>Loading leaderboard...</p>;
+    return (
+      <main className="main-content container">
+        <p className="muted">
+          Loading leaderboard...
+        </p>
+      </main>
+    );
   }
 
   if (error) {
-    return <p>{error}</p>;
+    return (
+      <main className="main-content container">
+        <div className="error">
+          {error}
+        </div>
+      </main>
+    );
   }
 
   return (
-    <div>
-      <Link to="/dashboard">
-        ← Dashboard
-      </Link>
+    <main className="main-content container">
+      <section className="page-header">
+        <p className="badge">
+          Competition
+        </p>
 
-      <h1>🏆 CyberXInfinity Leaderboard</h1>
+        <h1>🏆 Leaderboard</h1>
 
-      {data?.currentUser && (
-        <section>
-          <h2>Your Ranking</h2>
+        <p>
+          Complete labs, earn points, and track
+          your position.
+        </p>
+      </section>
 
-          <p>
-            Rank: #{data.currentUser.rank}
+      <section className="grid grid-3">
+        <div className="card card-padding">
+          <p className="muted">Your Rank</p>
+          <h2>
+            #{data.currentUser.rank}
+          </h2>
+        </div>
+
+        <div className="card card-padding">
+          <p className="muted">Your Points</p>
+          <h2>
+            {data.currentUser.points}
+          </h2>
+        </div>
+
+        <div className="card card-padding">
+          <p className="muted">
+            Labs Completed
           </p>
+          <h2>
+            {data.currentUser.completedLabs}/4
+          </h2>
+        </div>
+      </section>
 
-          <p>
-            Points: {data.currentUser.points}
-          </p>
+      <section
+        className="card"
+        style={{
+          marginTop: 24,
+          overflow: "hidden",
+        }}
+      >
+        <div className="card-padding">
+          <h2>Top Players</h2>
+        </div>
 
-          <p>
-            Labs Completed:{" "}
-            {data.currentUser.completedLabs} / 4
-          </p>
-        </section>
-      )}
+        {data.leaderboard.map(
+          (player) => {
+            const isCurrentUser =
+              player.id ===
+              data.currentUser.id;
 
-      <hr />
+            return (
+              <div
+                key={player.id}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns:
+                    "70px 1fr 120px 90px",
+                  gap: 16,
+                  alignItems: "center",
+                  padding: "16px 22px",
 
-      <section>
-        <h2>Top Players</h2>
+                  borderTop:
+                    "1px solid var(--border)",
 
-        {data?.leaderboard?.length === 0 ? (
-          <p>No players found.</p>
-        ) : (
-          <table>
-            <thead>
-              <tr>
-                <th>Rank</th>
-                <th>Student</th>
-                <th>Points</th>
-                <th>Labs</th>
-              </tr>
-            </thead>
+                  background: isCurrentUser
+                    ? "rgba(34, 211, 238, 0.07)"
+                    : "transparent",
+                }}
+              >
+                <strong>
+                  #{player.rank}
+                </strong>
 
-            <tbody>
-              {data.leaderboard.map((player) => {
-                const isCurrentUser =
-                  player.id ===
-                  data.currentUser.id;
+                <div>
+                  <strong>
+                    {player.username}
+                  </strong>
 
-                return (
-                  <tr
-                    key={player.id}
-                    style={{
-                      fontWeight: isCurrentUser
-                        ? "bold"
-                        : "normal",
-                    }}
-                  >
-                    <td>
-                      {player.rank}
-                    </td>
+                  {isCurrentUser && (
+                    <span
+                      className="badge"
+                      style={{
+                        marginLeft: 8,
+                      }}
+                    >
+                      You
+                    </span>
+                  )}
+                </div>
 
-                    <td>
-                      {player.username}
+                <strong>
+                  {player.points} pts
+                </strong>
 
-                      {isCurrentUser && (
-                        <span> (You)</span>
-                      )}
-                    </td>
-
-                    <td>
-                      {player.points}
-                    </td>
-
-                    <td>
-                      {player.completedLabs}/4
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                <span className="muted">
+                  {player.completedLabs}/4
+                </span>
+              </div>
+            );
+          }
         )}
       </section>
-    </div>
+    </main>
   );
 }
 

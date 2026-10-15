@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router";
+import {
+  Link,
+  useNavigate,
+} from "react-router";
 
 import { getDashboard } from "../services/userService";
 
@@ -17,15 +20,12 @@ function Dashboard() {
 
         setDashboard(data);
 
-        // Keep local user data synchronized
         localStorage.setItem(
           "user",
           JSON.stringify(data.user)
         );
       } catch (error) {
-        if (
-          error.response?.status === 401
-        ) {
+        if (error.response?.status === 401) {
           localStorage.removeItem("token");
           localStorage.removeItem("user");
 
@@ -45,19 +45,22 @@ function Dashboard() {
     loadDashboard();
   }, [navigate]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-
-    navigate("/login");
-  };
-
   if (loading) {
-    return <p>Loading dashboard...</p>;
+    return (
+      <main className="main-content container">
+        <p className="muted">
+          Loading dashboard...
+        </p>
+      </main>
+    );
   }
 
   if (error) {
-    return <p>{error}</p>;
+    return (
+      <main className="main-content container">
+        <div className="error">{error}</div>
+      </main>
+    );
   }
 
   if (!dashboard) {
@@ -73,133 +76,146 @@ function Dashboard() {
   } = dashboard;
 
   return (
-    <div>
-      {/* Header */}
-      <header>
-        <div>
-          <h1>CyberXInfinity</h1>
-          <p>
-            Cybersecurity Learning Platform
-          </p>
+    <main className="main-content container">
+      <section className="page-header">
+        <p className="badge">
+          Cybersecurity Learning Platform
+        </p>
+
+        <h1>
+          Welcome back, {user.name} 👋
+        </h1>
+
+        <p>
+          Continue learning, complete labs, and
+          climb the leaderboard.
+        </p>
+      </section>
+
+      <section className="grid grid-4">
+        <div className="card card-padding">
+          <p className="muted">⭐ Points</p>
+          <h2>{user.points}</h2>
         </div>
 
-        <div>
-          <span>
-            {user.username}
-          </span>
-
-          <button onClick={handleLogout}>
-            Logout
-          </button>
+        <div className="card card-padding">
+          <p className="muted">🏆 Rank</p>
+          <h2>#{user.rank}</h2>
         </div>
-      </header>
 
-      <main>
-        {/* Welcome */}
-        <section>
+        <div className="card card-padding">
+          <p className="muted">📚 Labs</p>
           <h2>
-            Welcome back, {user.name} 👋
+            {progress.completedLabs}/
+            {progress.totalLabs}
           </h2>
+        </div>
 
-          <p>
-            Keep learning and improve your
-            cybersecurity skills.
-          </p>
-        </section>
+        <div className="card card-padding">
+          <p className="muted">📈 Progress</p>
+          <h2>{progress.percentage}%</h2>
+        </div>
+      </section>
 
-        {/* Stats */}
-        <section>
+      <section
+        className="card card-padding"
+        style={{ marginTop: 20 }}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent:
+              "space-between",
+            gap: 16,
+            marginBottom: 12,
+          }}
+        >
           <div>
-            <h3>⭐ Points</h3>
-            <p>{user.points}</p>
-          </div>
-
-          <div>
-            <h3>🏆 Rank</h3>
-            <p>#{user.rank}</p>
-          </div>
-
-          <div>
-            <h3>📚 Labs</h3>
-            <p>
-              {progress.completedLabs} /{" "}
-              {progress.totalLabs}
+            <h2>Learning Progress</h2>
+            <p className="muted">
+              {progress.completedLabs} of{" "}
+              {progress.totalLabs} labs completed
             </p>
           </div>
 
+          <span className="badge">
+            {progress.percentage}%
+          </span>
+        </div>
+
+        <div className="progress-track">
+          <div
+            className="progress-fill"
+            style={{
+              width: `${progress.percentage}%`,
+            }}
+          />
+        </div>
+      </section>
+
+      <section style={{ marginTop: 28 }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 16,
+          }}
+        >
           <div>
-            <h3>📈 Progress</h3>
-            <p>
-              {progress.percentage}%
+            <h2>Your Labs</h2>
+            <p className="muted">
+              Continue where you left off.
             </p>
           </div>
-        </section>
 
-        {/* Progress */}
-        <section>
-          <h2>Learning Progress</h2>
+          <Link
+            to="/labs"
+            className="btn btn-secondary"
+          >
+            View All
+          </Link>
+        </div>
 
-          <div>
-            <div
-              style={{
-                width: "100%",
-                height: "12px",
-                background: "#ddd",
-              }}
+        <div className="grid grid-2">
+          {labs.map((lab) => (
+            <article
+              key={lab.id}
+              className="card card-padding"
             >
               <div
                 style={{
-                  width: `${progress.percentage}%`,
-                  height: "100%",
-                  background: "#333",
+                  display: "flex",
+                  justifyContent:
+                    "space-between",
+                  gap: 12,
                 }}
-              />
-            </div>
-          </div>
-
-          <p>
-            {progress.completedLabs} of{" "}
-            {progress.totalLabs} labs completed
-          </p>
-        </section>
-
-        {/* Labs */}
-        <section>
-          <div>
-            <h2>Your Labs</h2>
-
-            <Link to="/labs">
-              View All Labs
-            </Link>
-          </div>
-
-          {labs.map((lab) => (
-            <article key={lab.id}>
-              <div>
-                <span>
+              >
+                <span className="badge">
                   Lab {lab.order}
                 </span>
 
                 {lab.completed && (
-                  <span>
-                    ✅ Completed
+                  <span className="badge badge-success">
+                    ✓ Completed
                   </span>
                 )}
               </div>
 
               <h3>{lab.title}</h3>
 
-              <p>
+              <p className="muted">
                 {lab.description}
               </p>
 
-              <p>
+              <p className="muted">
                 {lab.difficulty} ·{" "}
                 {lab.estimatedTime} min
               </p>
 
               <Link
                 to={`/labs/${lab.slug}`}
+                className="btn btn-primary"
               >
                 {lab.completed
                   ? "Review Lab"
@@ -207,135 +223,189 @@ function Dashboard() {
               </Link>
             </article>
           ))}
-        </section>
+        </div>
+      </section>
 
-        {/* Latest Quiz */}
-        <section>
-          <h2>Latest Quiz Result</h2>
+      <section
+        className="grid grid-2"
+        style={{ marginTop: 28 }}
+      >
+        <div className="card card-padding">
+          <h2>Latest Quiz</h2>
 
           {!latestAttempt ? (
-            <p>
-              You haven't completed a quiz yet.
+            <p className="muted">
+              Complete your first quiz to see your
+              results here.
             </p>
           ) : (
-            <div>
-              <h3>
-                {latestAttempt.lab?.title ||
-                  "Quiz"}
-              </h3>
-
-              <p>
-                Score:{" "}
-                {latestAttempt.score}/
-                {latestAttempt.totalQuestions}
+            <>
+              <p className="muted">
+                {latestAttempt.lab?.title}
               </p>
 
-              <p>
-                {latestAttempt.percentage}%
-              </p>
-            </div>
+              <div
+                style={{
+                  display: "flex",
+                  gap: 24,
+                  alignItems: "center",
+                }}
+              >
+                <div>
+                  <h2>
+                    {latestAttempt.score}/
+                    {latestAttempt.totalQuestions}
+                  </h2>
+
+                  <p className="muted">
+                    {latestAttempt.percentage}%
+                  </p>
+                </div>
+
+                <Link
+                  to={`/labs/${latestAttempt.lab?.slug}`}
+                  className="btn btn-secondary"
+                >
+                  Review Lab
+                </Link>
+              </div>
+            </>
           )}
-        </section>
+        </div>
 
-        {/* AI Feedback */}
-        <section>
+        <div className="card card-padding">
           <h2>🤖 AI Learning Suggestion</h2>
 
           {!latestAttempt?.aiSuggestion ? (
-            <p>
-              Complete a quiz to receive
-              personalized learning suggestions.
+            <p className="muted">
+              Complete a quiz to receive personalized
+              learning guidance.
             </p>
           ) : (
-            <div>
-              <h3>
-                {latestAttempt.lab?.title}
-              </h3>
-
+            <>
               <p>
                 {latestAttempt.aiSuggestion.summary}
               </p>
 
               {latestAttempt.aiSuggestion
-                .weakTopics.length > 0 && (
+                .weakTopics?.length > 0 && (
                 <>
-                  <h4>
-                    Topics to Review
-                  </h4>
+                  <p className="muted">
+                    Focus areas
+                  </p>
 
-                  <ul>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: 8,
+                    }}
+                  >
                     {latestAttempt.aiSuggestion
                       .weakTopics.map(
-                        (topic, index) => (
-                          <li key={index}>
+                        (topic) => (
+                          <span
+                            className="badge badge-warning"
+                            key={topic}
+                          >
                             {topic}
-                          </li>
+                          </span>
                         )
                       )}
-                  </ul>
+                  </div>
                 </>
               )}
 
-              <Link
-                to={`/labs/${latestAttempt.lab?.slug}`}
+              <p
+                style={{
+                  marginTop: 16,
+                  color: "var(--primary)",
+                }}
               >
-                Continue Learning
-              </Link>
-            </div>
+                Next:{" "}
+                {
+                  latestAttempt.aiSuggestion
+                    .nextStep
+                }
+              </p>
+            </>
           )}
-        </section>
+        </div>
+      </section>
 
-        {/* Recent Quiz Attempts */}
-        <section>
-          <h2>Recent Quiz Attempts</h2>
-
-          {recentAttempts.length === 0 ? (
-            <p>
-              No quiz attempts yet.
+      <section
+        className="card card-padding"
+        style={{ marginTop: 28 }}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <div>
+            <h2>Recent Quiz Attempts</h2>
+            <p className="muted">
+              Your latest learning activity.
             </p>
-          ) : (
-            recentAttempts.map((attempt) => (
-              <article key={attempt._id}>
-                <h3>
-                  {attempt.lab?.title ||
-                    "Quiz"}
-                </h3>
+          </div>
 
-                <p>
-                  {attempt.score}/
-                  {attempt.totalQuestions}
-                </p>
-
-                <p>
-                  {attempt.percentage}%
-                </p>
-
-                <p>
-                  {new Date(
-                    attempt.createdAt
-                  ).toLocaleDateString()}
-                </p>
-              </article>
-            ))
-          )}
-        </section>
-
-        {/* Quick Actions */}
-        <section>
-          <h2>Quick Actions</h2>
-
-          <Link to="/labs">
-            📚 Explore Labs
+          <Link
+            to="/leaderboard"
+            className="btn btn-secondary"
+          >
+            🏆 Leaderboard
           </Link>
+        </div>
 
-          {" · "}
+        {recentAttempts.length === 0 ? (
+          <p className="muted">
+            No quiz attempts yet.
+          </p>
+        ) : (
+          <div style={{ marginTop: 16 }}>
+            {recentAttempts.map((attempt) => (
+              <div
+                key={attempt._id}
+                style={{
+                  display: "flex",
+                  justifyContent:
+                    "space-between",
+                  gap: 16,
+                  padding: "14px 0",
+                  borderBottom:
+                    "1px solid var(--border)",
+                }}
+              >
+                <div>
+                  <strong>
+                    {attempt.lab?.title}
+                  </strong>
 
-          <Link to="/leaderboard">
-            🏆 View Leaderboard
-          </Link>
-        </section>
-      </main>
-    </div>
+                  <p className="muted">
+                    {new Date(
+                      attempt.createdAt
+                    ).toLocaleDateString()}
+                  </p>
+                </div>
+
+                <div style={{ textAlign: "right" }}>
+                  <strong>
+                    {attempt.score}/
+                    {attempt.totalQuestions}
+                  </strong>
+
+                  <p className="muted">
+                    {attempt.percentage}%
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+    </main>
   );
 }
 

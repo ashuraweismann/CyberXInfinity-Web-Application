@@ -44,45 +44,99 @@ function Login() {
   };
 
   return (
-    <div>
-      <h1>CyberXInfinity</h1>
-      <h2>Login</h2>
+<main className="auth-page">
+  <section className="auth-card">
+    <div className="auth-logo">
+      <span className="brand-mark">CX</span>
 
-      {error && <p>{error}</p>}
+      <span>
+        Cyber<span>XInfinity</span>
+      </span>
+    </div>
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email</label>
+    <div className="page-header">
+      <h1>Welcome Back</h1>
+      <p>
+        Sign in to continue your cybersecurity
+        learning journey.
+      </p>
+    </div>
+
+    {error && (
+      <div
+        className="error"
+        style={{ marginBottom: 16 }}
+      >
+        {error}
+      </div>
+    )}
+
+
+      <form
+        className="auth-form"
+        onSubmit={handleSubmit}
+      >
+        {/* Email */}
+        <div className="form-group">
+          <label htmlFor="email">
+            Email Address
+          </label>
+
           <input
+            id="email"
             type="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
+            placeholder="you@example.com"
+            autoComplete="email"
             required
           />
         </div>
 
-        <div>
-          <label>Password</label>
+        {/* Password */}
+        <div className="form-group">
+          <label htmlFor="password">
+            Password
+          </label>
+
           <input
+            id="password"
             type="password"
             name="password"
             value={formData.password}
             onChange={handleChange}
+            placeholder="Enter your password"
+            autoComplete="current-password"
             required
           />
         </div>
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
+        {/* Login Button */}
+        <button
+          type="submit"
+          className="btn btn-primary"
+          disabled={loading}
+          style={{
+            width: "100%",
+            marginTop: 4,
+          }}
+        >
+          {loading
+            ? "Logging in..."
+            : "Login →"}
         </button>
       </form>
 
-      <p>
-        Don't have an account?{" "}
-        <Link to="/register">Register</Link>
-      </p>
+    <div className="auth-footer">
+      Don't have an account?{" "}
+      <Link to="/register">
+        Create one
+      </Link>
     </div>
+  </section>
+</main>
+
   );
 }
 

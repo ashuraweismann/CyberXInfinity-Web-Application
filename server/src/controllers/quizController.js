@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 import QuizQuestion from "../models/QuizQuestion.js";
 import QuizAttempt from "../models/QuizAttempt.js";
 import Lab from "../models/Lab.js";
@@ -8,6 +10,13 @@ import generateLearningSuggestion from "../services/aiService.js";
 export const getQuizByLab = async (req, res) => {
   try {
     const { labId } = req.params;
+
+        if (!mongoose.isValidObjectId(labId)) {
+          return res.status(400).json({
+            success: false,
+            message: "Invalid lab ID.",
+          });
+        }
 
     const lab = await Lab.findOne({
       _id: labId,
@@ -59,6 +68,13 @@ export const submitQuiz = async (req, res) => {
   try {
     const { labId } = req.params;
     const { answers } = req.body;
+
+        if (!mongoose.isValidObjectId(labId)) {
+            return res.status(400).json({
+              success: false,
+              message: "Invalid lab ID.",
+            });
+          }
 
     const lab = await Lab.findOne({
         _id: labId,

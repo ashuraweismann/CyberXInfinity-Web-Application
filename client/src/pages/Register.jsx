@@ -45,70 +45,142 @@ function Register() {
     }
   };
 
-  return (
-    <div>
-      <h1>CyberXInfinity</h1>
-      <h2>Create Account</h2>
 
-      {error && <p>{error}</p>}
+return (
+  <main className="auth-page">
+    <section className="auth-card">
+      {/* Logo */}
+      <div className="auth-logo">
+        <span className="brand-mark">CX</span>
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Name</label>
+        <span>
+          Cyber<span>XInfinity</span>
+        </span>
+      </div>
+
+      {/* Header */}
+      <div className="page-header">
+        <h1>Create Account</h1>
+
+        <p>
+          Join CyberXInfinity and start your
+          cybersecurity learning journey.
+        </p>
+      </div>
+
+      {/* Error */}
+      {error && (
+        <div className="error" style={{ marginBottom: 16 }}>
+          {error}
+        </div>
+      )}
+
+      {/* Form */}
+      <form
+        className="auth-form"
+        onSubmit={handleSubmit}
+      >
+        {/* Name */}
+        <div className="form-group">
+          <label htmlFor="name">
+            Full Name
+          </label>
+
           <input
+            id="name"
             type="text"
             name="name"
             value={formData.name}
             onChange={handleChange}
+            placeholder="Enter your name"
+            autoComplete="name"
             required
           />
         </div>
 
-        <div>
-          <label>Username</label>
+        {/* Username */}
+        <div className="form-group">
+          <label htmlFor="username">
+            Username
+          </label>
+
           <input
+            id="username"
             type="text"
             name="username"
             value={formData.username}
             onChange={handleChange}
+            placeholder="Choose a username"
+            autoComplete="username"
             required
           />
         </div>
 
-        <div>
-          <label>Email</label>
+        {/* Email */}
+        <div className="form-group">
+          <label htmlFor="email">
+            Email Address
+          </label>
+
           <input
+            id="email"
             type="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
+            placeholder="you@example.com"
+            autoComplete="email"
             required
           />
         </div>
 
-        <div>
-          <label>Password</label>
+        {/* Password */}
+        <div className="form-group">
+          <label htmlFor="password">
+            Password
+          </label>
+
           <input
+            id="password"
             type="password"
             name="password"
             value={formData.password}
             onChange={handleChange}
+            placeholder="At least 6 characters"
+            autoComplete="new-password"
             minLength="6"
             required
           />
         </div>
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Creating account..." : "Register"}
+        {/* Register */}
+        <button
+          type="submit"
+          className="btn btn-primary"
+          disabled={loading}
+          style={{
+            width: "100%",
+            marginTop: 4,
+          }}
+        >
+          {loading
+            ? "Creating account..."
+            : "Create Account →"}
         </button>
       </form>
 
-      <p>
+      {/* Footer */}
+      <div className="auth-footer">
         Already have an account?{" "}
-        <Link to="/login">Login</Link>
-      </p>
-    </div>
-  );
+        <Link to="/login">
+          Login
+        </Link>
+      </div>
+    </section>
+  </main>
+);
+
+
 }
 
 export default Register;

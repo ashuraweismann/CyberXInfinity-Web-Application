@@ -1,4 +1,5 @@
 import { Navigate } from "react-router";
+import Navbar from "./Navbar";
 
 function ProtectedRoute({ children }) {
   const token = localStorage.getItem("token");
@@ -7,7 +8,13 @@ function ProtectedRoute({ children }) {
     return <Navigate to="/login" replace />;
   }
 
-  return children;
+  return (
+    <div className="page">
+      <Navbar />
+
+      {children}
+    </div>
+  );
 }
 
 export default ProtectedRoute;

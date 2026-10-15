@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router";
-import { getLabBySlug } from "../services/labService";
+import {
+  Link,
+  useParams,
+} from "react-router";
 
+import { getLabBySlug } from "../services/labService";
 
 function LabDetail() {
   const { slug } = useParams();
@@ -29,53 +32,139 @@ function LabDetail() {
   }, [slug]);
 
   if (loading) {
-    return <p>Loading lab...</p>;
+    return (
+      <main className="main-content container">
+        <p className="muted">
+          Loading lab...
+        </p>
+      </main>
+    );
   }
 
   if (error) {
-    return <p>{error}</p>;
+    return (
+      <main className="main-content container">
+        <div className="error">{error}</div>
+      </main>
+    );
   }
 
   if (!lab) {
-    return <p>Lab not found.</p>;
+    return null;
   }
 
   return (
-    <div>
-      <Link to="/labs">← Back to Labs</Link>
-
-      <h1>{lab.title}</h1>
-
-      <p>{lab.description}</p>
-
-      <p>
-        Difficulty: {lab.difficulty} | Estimated time:{" "}
-        {lab.estimatedTime} minutes
-      </p>
-
-      <h2>Key Concepts</h2>
-
-      <ul>
-        {lab.keyConcepts.map((concept) => (
-          <li key={concept}>{concept}</li>
-        ))}
-      </ul>
-
-      <hr />
-
-      {lab.theory.map((section) => (
-        <section key={section.title}>
-          <h2>{section.title}</h2>
-          <p>{section.content}</p>
-        </section>
-      ))}
-
-      <hr />
-
-      <Link to={`/labs/${lab._id}/quiz`}>
-        Take Lab Quiz
+    <main className="main-content container">
+      <Link to="/labs" className="muted">
+        ← Back to Labs
       </Link>
-    </div>
+
+      <section className="page-header"
+        style={{ marginTop: 20 }}
+      >
+        <span className="badge">
+          Lab {lab.order}
+        </span>
+
+        <h1>{lab.title}</h1>
+
+        <p>{lab.description}</p>
+
+        <div
+          style={{
+            display: "flex",
+            gap: 10,
+            flexWrap: "wrap",
+            marginTop: 14,
+          }}
+        >
+          <span className="badge">
+            {lab.difficulty}
+          </span>
+
+          <span className="badge">
+            ⏱ {lab.estimatedTime} min
+          </span>
+        </div>
+      </section>
+
+      <section className="card card-padding">
+        <h2>Key Concepts</h2>
+
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 8,
+          }}
+        >
+          {lab.keyConcepts.map(
+            (concept) => (
+              <span
+                key={concept}
+                className="badge"
+              >
+                {concept}
+              </span>
+            )
+          )}
+        </div>
+      </section>
+
+      <section style={{ marginTop: 24 }}>
+        {lab.theory.map(
+          (section, index) => (
+            <article
+              key={section.title}
+              className="card card-padding"
+              style={{
+                marginBottom: 18,
+              }}
+            >
+              <span className="badge">
+                {String(index + 1).padStart(
+                  2,
+                  "0"
+                )}
+              </span>
+
+              <h2>{section.title}</h2>
+
+              <p
+                style={{
+                  lineHeight: 1.8,
+                  color: "var(--muted)",
+                }}
+              >
+                {section.content}
+              </p>
+            </article>
+          )
+        )}
+      </section>
+
+      <section
+        className="card card-padding"
+        style={{
+          marginTop: 28,
+          textAlign: "center",
+        }}
+      >
+        <h2>Ready to test your knowledge?</h2>
+
+        <p className="muted">
+          Complete the quiz to evaluate your
+          understanding and earn points.
+        </p>
+
+        <Link
+          to={`/labs/${lab._id}/quiz`}
+          className="btn btn-primary"
+        >
+          Take Lab Quiz →
+        </Link>
+      </section>
+    </main>
   );
 }
 
