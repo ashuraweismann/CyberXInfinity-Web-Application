@@ -8,7 +8,9 @@
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
     "seed:labs": "node src/seedLabs.js",
-    "seed:quizzes": "node src/seedQuizzes.js"
+    "seed:quizzes": "node src/seedQuizzes.js",
+    "migrate:user-roles": "node src/migrateUserRoles.js",
+    "admin:create": "node src/createAdmin.js"
   },
   "keywords": [],
   "author": "",

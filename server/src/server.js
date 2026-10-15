@@ -12,6 +12,8 @@ import labRoutes from "./routes/labRoutes.js";
 import quizRoutes from "./routes/quizRoutes.js";
 import leaderboardRoutes from "./routes/leaderboardRoutes.js";
 
+import adminRoutes from "./routes/adminRoutes.js";
+
 dotenv.config();
 
 const app = express();
@@ -55,6 +57,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/labs", labRoutes);
 app.use("/api/quizzes", quizRoutes);
 app.use("/api/leaderboard", leaderboardRoutes);
+app.use("/api/admin", adminRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {

@@ -55,6 +55,7 @@ export const register = async (req, res) => {
       username: username.toLowerCase(),
       email: email.toLowerCase(),
       password: hashedPassword,
+      role: "student",
     });
 
     // Create JWT
@@ -69,6 +70,7 @@ export const register = async (req, res) => {
         name: user.name,
         username: user.username,
         email: user.email,
+        role: user.role,
         points: user.points,
         completedLabs: user.completedLabs,
       },
@@ -127,6 +129,7 @@ export const login = async (req, res) => {
         name: user.name,
         username: user.username,
         email: user.email,
+        role: user.role,
         points: user.points,
         completedLabs: user.completedLabs,
       },

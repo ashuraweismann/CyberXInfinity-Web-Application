@@ -5,7 +5,7 @@ import QuizAttempt from "../models/QuizAttempt.js";
 export const getCurrentUser = async (req, res) => {
   try {
     const user = await User.findById(req.user.userId).select(
-      "_id name username email points completedLabs completedLabIds"
+      "_id name username email role points completedLabs completedLabIds"
     );
 
     if (!user) {
@@ -35,7 +35,7 @@ export const getDashboard = async (req, res) => {
 
     // Get current user
     const user = await User.findById(userId).select(
-      "_id name username email points completedLabs completedLabIds"
+      "_id name username email role points completedLabs completedLabIds"
     );
 
     if (!user) {
@@ -97,8 +97,8 @@ export const getDashboard = async (req, res) => {
     const progressPercentage =
       totalLabs > 0
         ? Math.round(
-            (user.completedLabs / totalLabs) * 100
-          )
+          (user.completedLabs / totalLabs) * 100
+        )
         : 0;
 
     const latestAttempt =
@@ -114,6 +114,7 @@ export const getDashboard = async (req, res) => {
         name: user.name,
         username: user.username,
         email: user.email,
+        role: user.role,
         points: user.points,
         completedLabs: user.completedLabs,
         rank,
