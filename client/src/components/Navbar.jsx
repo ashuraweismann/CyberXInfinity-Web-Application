@@ -54,6 +54,15 @@ function Navbar() {
           >
             Leaderboard
           </NavLink>
+
+          {user?.role === "admin" && (
+            <NavLink
+              to="/admin/labs"
+              className="nav-link"
+            >
+              Manage Labs
+            </NavLink>
+          )}
         </nav>
 
         <div className="navbar-user">

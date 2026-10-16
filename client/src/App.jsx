@@ -8,6 +8,10 @@ import LabDetail from "./pages/LabDetail";
 import Quiz from "./pages/Quiz";
 import Leaderboard from "./pages/Leaderboard";
 
+import AdminRoute from "./components/AdminRoute";
+import AdminLabs from "./pages/admin/AdminLabs";
+import AdminLabForm from "./pages/admin/AdminLabForm";
+
 function App() {
   return (
     <Routes>
@@ -25,8 +29,8 @@ function App() {
           </ProtectedRoute>
         }
       />
-    
-    <Route
+
+      <Route
         path="/labs"
         element={
           <ProtectedRoute>
@@ -57,6 +61,32 @@ function App() {
           <ProtectedRoute>
             <Leaderboard />
           </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/labs"
+        element={
+          <AdminRoute>
+            <AdminLabs />
+          </AdminRoute>
+        }
+      />
+
+      <Route
+        path="/admin/labs/new"
+        element={
+          <AdminRoute>
+            <AdminLabForm />
+          </AdminRoute>
+        }
+      />
+
+      <Route
+        path="/admin/labs/:id/edit"
+        element={
+          <AdminRoute>
+            <AdminLabForm />
+          </AdminRoute>
         }
       />
     </Routes>
