@@ -35,7 +35,7 @@ function Dashboard() {
 
         setError(
           error.response?.data?.message ||
-            "Failed to load dashboard."
+          "Failed to load dashboard."
         );
       } finally {
         setLoading(false);
@@ -100,7 +100,9 @@ function Dashboard() {
 
         <div className="card card-padding">
           <p className="muted">🏆 Rank</p>
-          <h2>#{user.rank}</h2>
+          <h2>
+            {user.rank == null ? "Not ranked" : `#${user.rank}`}
+          </h2>
         </div>
 
         <div className="card card-padding">
@@ -289,32 +291,32 @@ function Dashboard() {
 
               {latestAttempt.aiSuggestion
                 .weakTopics?.length > 0 && (
-                <>
-                  <p className="muted">
-                    Focus areas
-                  </p>
+                  <>
+                    <p className="muted">
+                      Focus areas
+                    </p>
 
-                  <div
-                    style={{
-                      display: "flex",
-                      flexWrap: "wrap",
-                      gap: 8,
-                    }}
-                  >
-                    {latestAttempt.aiSuggestion
-                      .weakTopics.map(
-                        (topic) => (
-                          <span
-                            className="badge badge-warning"
-                            key={topic}
-                          >
-                            {topic}
-                          </span>
-                        )
-                      )}
-                  </div>
-                </>
-              )}
+                    <div
+                      style={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        gap: 8,
+                      }}
+                    >
+                      {latestAttempt.aiSuggestion
+                        .weakTopics.map(
+                          (topic) => (
+                            <span
+                              className="badge badge-warning"
+                              key={topic}
+                            >
+                              {topic}
+                            </span>
+                          )
+                        )}
+                    </div>
+                  </>
+                )}
 
               <p
                 style={{

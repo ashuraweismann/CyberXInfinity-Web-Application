@@ -46,13 +46,18 @@ export const getDashboard = async (req, res) => {
     }
 
     // Count users with more points than current user
-    const usersAhead = await User.countDocuments({
-      points: {
-        $gt: user.points,
-      },
-    });
+    const usersAhead =
+      user.role === "student"
+        ? await User.countDocuments({
+          role: "student",
+          points: { $gt: user.points },
+        })
+        : null;
 
-    const rank = usersAhead + 1;
+    const rank =
+      user.role === "student"
+        ? usersAhead + 1
+        : null;
 
     // Get all published labs
     const labs = await Lab.find({

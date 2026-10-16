@@ -224,6 +224,13 @@ function AdminLabs() {
                         Edit
                       </Link>
 
+                      <Link
+                        to={`/admin/labs/${lab._id}/questions`}
+                        className="btn btn-secondary"
+                      >
+                        Manage Quiz
+                      </Link>
+
                       <button
                         type="button"
                         className="btn btn-danger"

@@ -4,6 +4,7 @@ import authMiddleware from "../middleware/authMiddleware.js";
 import authorizeRoles from "../middleware/authorizeRoles.js";
 
 import adminLabRoutes from "./adminLabRoutes.js";
+import adminQuizRoutes from "./adminQuizRoutes.js";
 
 const router = express.Router();
 
@@ -14,6 +15,7 @@ router.use(
 );
 
 router.use("/labs", adminLabRoutes);
+router.use("/labs", adminQuizRoutes);
 
 // Temporary endpoint used to verify the permission system.
 router.get("/check", (req, res) => {

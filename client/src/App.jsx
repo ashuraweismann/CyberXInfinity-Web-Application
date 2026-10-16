@@ -11,6 +11,7 @@ import Leaderboard from "./pages/Leaderboard";
 import AdminRoute from "./components/AdminRoute";
 import AdminLabs from "./pages/admin/AdminLabs";
 import AdminLabForm from "./pages/admin/AdminLabForm";
+import AdminQuizQuestions from "./pages/admin/AdminQuizQuestions";
 
 function App() {
   return (
@@ -86,6 +87,15 @@ function App() {
         element={
           <AdminRoute>
             <AdminLabForm />
+          </AdminRoute>
+        }
+      />
+
+      <Route
+        path="/admin/labs/:labId/questions"
+        element={
+          <AdminRoute>
+            <AdminQuizQuestions />
           </AdminRoute>
         }
       />

@@ -17,7 +17,7 @@ function Leaderboard() {
       } catch (error) {
         setError(
           error.response?.data?.message ||
-            "Failed to load leaderboard."
+          "Failed to load leaderboard."
         );
       } finally {
         setLoading(false);
@@ -66,8 +66,16 @@ function Leaderboard() {
         <div className="card card-padding">
           <p className="muted">Your Rank</p>
           <h2>
-            #{data.currentUser.rank}
+            {data.currentUser.eligible
+              ? `#${data.currentUser.rank}`
+              : "Not ranked"}
           </h2>
+
+          <p className="muted">
+            {data.currentUser.eligible
+              ? "Your student leaderboard position"
+              : "Admin accounts are excluded from student rankings."}
+          </p>
         </div>
 
         <div className="card card-padding">

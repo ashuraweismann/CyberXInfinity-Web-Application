@@ -604,7 +604,6 @@ const seedQuizzes = async () => {
   try {
     await connectDB();
 
-    await QuizQuestion.deleteMany({});
 
     const documents = [];
 
@@ -624,7 +623,20 @@ const seedQuizzes = async () => {
       });
     }
 
-    await QuizQuestion.insertMany(documents);
+    const operations = documents.map((document) => ({
+      updateOne: {
+        filter: {
+          lab: document.lab,
+          order: document.order,
+        },
+        update: {
+          $setOnInsert: document,
+        },
+        upsert: true,
+      },
+    }));
+
+    await QuizQuestion.bulkWrite(operations);
 
     console.log(
       `Quiz questions seeded successfully ✅ (${documents.length} questions)`

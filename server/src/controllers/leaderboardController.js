@@ -1,9 +1,12 @@
+
 import User from "../models/User.js";
 
 export const getLeaderboard = async (req, res) => {
   try {
-    // Get top 100 users
-    const users = await User.find({})
+    // Only student accounts can appear on the leaderboard.
+    const users = await User.find({
+      role: "student",
+    })
       .select("_id name username points completedLabs")
       .sort({
         points: -1,
@@ -12,17 +15,18 @@ export const getLeaderboard = async (req, res) => {
       })
       .limit(100);
 
-    let currentRank = 0;
+    // Competition ranking: 1, 2, 2, 4.
+    let rank = 0;
     let previousPoints = null;
 
     const leaderboard = users.map((user, index) => {
       if (previousPoints !== user.points) {
-        currentRank = index + 1;
+        rank = index + 1;
         previousPoints = user.points;
       }
 
       return {
-        rank: currentRank,
+        rank,
         id: user._id,
         name: user.name,
         username: user.username,
@@ -31,9 +35,11 @@ export const getLeaderboard = async (req, res) => {
       };
     });
 
-    // Get the logged-in user's current points
-    const currentUser = await User.findById(req.user.userId)
-      .select("_id name username points completedLabs");
+    const currentUser = await User.findById(
+      req.user.userId
+    ).select(
+      "_id name username role points completedLabs"
+    );
 
     if (!currentUser) {
       return res.status(404).json({
@@ -42,15 +48,15 @@ export const getLeaderboard = async (req, res) => {
       });
     }
 
-    // Competition ranking:
-    // users with more points determine the rank
-    const usersAhead = await User.countDocuments({
-      points: {
-        $gt: currentUser.points,
-      },
-    });
+    // Admins have no student leaderboard rank.
+    const isRanked = currentUser.role === "student";
 
-    const currentUserRank = usersAhead + 1;
+    const usersAhead = isRanked
+      ? await User.countDocuments({
+        role: "student",
+        points: { $gt: currentUser.points },
+      })
+      : null;
 
     return res.status(200).json({
       success: true,
@@ -59,9 +65,11 @@ export const getLeaderboard = async (req, res) => {
         id: currentUser._id,
         name: currentUser.name,
         username: currentUser.username,
+        role: currentUser.role,
         points: currentUser.points,
         completedLabs: currentUser.completedLabs,
-        rank: currentUserRank,
+        rank: isRanked ? usersAhead + 1 : null,
+        eligible: isRanked,
       },
     });
   } catch (error) {
